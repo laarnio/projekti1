@@ -1,19 +1,27 @@
 var express       = require('express');
-var app           = express();
+//var app           = express();
 var passport      = require('passport');
 var port          = process.env.PORT || 8080;
 var flash         = require('connect-flash');
-var knex          = require('./knexfile')
+var Knex          = require('knex');
 
 var morgan        = require('morgan');
 var cookieParser  = require('cookie-parser');
 var bodyParser    = require('body-parser');
 var session       = require('express-session');
 var pg            = require('pg');
+var Model         = require('objection').Model;
 
-var configDB      = require ('./config/database.js');
-var client        = new pg.Client(configDB.url);
-client.connect();
+var knexConfig = require('./knexfile');
+var knex = Knex(knexConfig.development);
+
+Model.knex(knex);
+
+var app = express()
+  .use(bodyParser.json())
+  .use(morgan('dev'))
+  .set('json spaces', 2);
+
 
 require('./config/passport')(passport); // pass passport for configuration
 
@@ -53,6 +61,13 @@ app.get('/about', function (req, res) {
 require('./routes/login.js')(app, passport); 
 require('./routes/signup.js')(app, passport);
 
+app.use(function (err, req, res, next) {
+  if (err) {
+    res.status(err.statusCode || err.status || 500).send(err.data || err.message || {});
+  } else {
+    next();
+  }
+});
 
 app.listen(8080);
 console.log('Listening to radio 8080');
