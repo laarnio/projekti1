@@ -24,8 +24,9 @@ Person.jsonSchema = {
   properties: {
     id: {type: 'integer'},
     firstName: {type: 'string', minLength: 1, maxLength: 255},
-    lastName: {type: 'string', minLength: 1, maxLength: 255},
-    age: {type: 'number'},
+    lastName: {type: 'string', minLength: 1, maxLength: 255}
+    username: {type 'string', minLength: 1, maxLength: 255},
+    password {type 'string', minLength: 1, maxLength: 255}
   }
 };
 
