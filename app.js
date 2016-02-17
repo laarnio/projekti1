@@ -15,9 +15,9 @@ var knex = Knex(knexConfig.development);
 Model.knex(knex);
 
 var app = express()
-  .use(bodyParser.json())
-  .use(morgan('dev'))
-  .set('json spaces', 2);
+.use(bodyParser.json())
+.use(morgan('dev'))
+.set('json spaces', 2);
 
 // Register our REST API.
 registerApi(app);
