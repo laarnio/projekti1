@@ -3,6 +3,7 @@ var app           = express();
 var passport      = require('passport');
 var port          = process.env.PORT || 8080;
 var flash         = require('connect-flash');
+var knex          = require('./knexfile')
 
 var morgan        = require('morgan');
 var cookieParser  = require('cookie-parser');

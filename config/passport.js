@@ -50,11 +50,13 @@ module.exports = function(passport) {
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
+        console.log('1');
         User
             .query()
             .where('username', username)
             .then(function (err, user) {
             // if there are any errors, return the error
+            console.log('2');
             if (err)
                 return done(err);
 
@@ -65,14 +67,7 @@ module.exports = function(passport) {
 
                 // if there is no user with that email
                 // create the user
-                var newUser            = new User();
-
-                // set the user's local credentials
-                newUser.local.user    = email;
-                newUser.local.password = newUser.generateHash(password);
-                newUser.local.firstName = firstName;
-                newUser.local.lastName = lastName;
-                newUser.local.isAdmin = false;
+            
                 // save the user
                 newUser.save(function(err) {
                     if (err)
