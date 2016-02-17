@@ -1,0 +1,20 @@
+{
+  "name": "objection-example-express",
+  "version": "0.4.0",
+  "description": "Objection.js express example",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "author": "Sami Koskimäki",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.12.4",
+    "express": "^4.12.4",
+    "knex": "^0.9.0",
+    "morgan": "^1.6.0",
+    "objection": "^0.4.0",
+    "pg": "^4.4.6",
+    "sqlite3": "^3.0.8"
+  }
+}
