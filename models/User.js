@@ -19,7 +19,7 @@ User.tableName = 'User';
 // is created it is checked against this schema. http://json-schema.org/.
 User.jsonSchema = {
   type: 'object',
-  required: ['firstName', 'lastName'],
+  required: ['firstName', 'lastName', 'username', 'password'],
 
   properties: {
     id: {type: 'integer'},

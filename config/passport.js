@@ -22,9 +22,17 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
-            done(err, user);
-        });
+        //User.findById(id, function(err, user) {
+        //    done(err, user);
+        //});
+        User
+              .query()
+              .where('id', id)
+              .then(function (user){
+                done(null, user);
+              }).catch(function (err){
+                console.log(err);
+              })
     });
 
     // =========================================================================
@@ -34,52 +42,60 @@ module.exports = function(passport) {
     // by default, if there was no name, it would just be called 'local'
 
     passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email
-        firstNameField : 'firstName',
-        lastNameField : 'lastName',
+        // by default, local strategy uses username and password, we will override with email               
         usernameField : 'username',
-        passwordField : 'password',
-        isAdminField : 'isAdmin',
+        passwordField : 'password',       
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, username, password, firstName, lastName, done) {
+    function(req, username, password, done) {
 
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
-
+        
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        console.log(username + 'username');
+        //console.log(username + 'username');
         User
             .query()
             .where('username', username)
-            .then(function (err, user) {
-            // if there are any errors, return the error
-            console.log('2');
-            if (err)
-                return done(err);
-
-            // check to see if theres already a user with that email
-            if (user) {
-                return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+            .then(function (user) {
+            
+            //console.log(user);
+            // check to see if theres already a user with that username
+            if (user != '') {
+                console.log('Username is already taken.');
+                done(null, false);
+                //return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
             } else {
 
-                // if there is no user with that email
-                // create the user
-            
-                // save the user
-                newUser.save(function(err) {
-                    if (err)
-                        throw err;
-                    return done(null, newUser);
-                });
+                // if there is no user with that username
+                req.body.password = User.usergenerateHash(password);
+                req.body.isAdmin = false;
+                User
+                  .query()
+                  .insert(req.body)
+                  .then(function (user){
+                    console.log('New user created');   
+                    //TODO: joku vitun returni nyt saatana tähän
+                    return done(null, user);
+                  }).catch(function (err){
+                    console.log(err);                  
+                  });
+                  
+
+                
+                
             }
 
-        });    
+        })
+            .catch(function (err) {
+
+              console.log(err);
+            });    
 
         });
-
+    
     }));
 
 };
