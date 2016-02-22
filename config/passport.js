@@ -5,6 +5,7 @@ var LocalStrategy     = require('passport-local');
 
 //Load up the person model
 var User              = require ('../models/User.js');
+var bcrypt            = require('bcrypt-nodejs');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -17,6 +18,8 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
+        console.log('serializing..')
+        console.log(user.id);
         done(null, user.id);
     });
 
@@ -32,7 +35,7 @@ module.exports = function(passport) {
                 done(null, user);
               }).catch(function (err){
                 console.log(err);
-              })
+              });
     });
 
     // =========================================================================
@@ -56,6 +59,7 @@ module.exports = function(passport) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         //console.log(username + 'username');
+        
         User
             .query()
             .where('username', username)
@@ -70,7 +74,7 @@ module.exports = function(passport) {
             } else {
 
                 // if there is no user with that username
-                req.body.password = User.usergenerateHash(password);
+                req.body.password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
                 req.body.isAdmin = false;
                 User
                   .query()
@@ -78,6 +82,7 @@ module.exports = function(passport) {
                   .then(function (user){
                     console.log('New user created');   
                     //TODO: joku vitun returni nyt saatana tähän
+                    console.log(user);
                     return done(null, user);
                   }).catch(function (err){
                     console.log(err);                  
@@ -97,5 +102,45 @@ module.exports = function(passport) {
         });
     
     }));
+  passport.use('local-login', new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'username',
+        passwordField : 'password',
+        passReqToCallback : true // allows us to pass back the entire request to the callback
+    },
+    function(req, username, password, done) { // callback with email and password from our form
+
+      // find a user whose email is the same as the forms email
+      // we are checking to see if the user trying to login already exists
+      console.log('templatesta tulee: '+ password);
+
+      User
+        .query()
+        .where('username', username)
+        .then(function (user){
+          console.log(user);
+          if(!(user.length && user.length > 0)  ){
+            console.log('User not found.');
+            return done(null, false);
+          }
+          console.log(user[0].password);
+          if(!bcrypt.compareSync(password, user[0].password)){
+            console.log('Invalid password.');
+            return done(null, false);
+          }
+          console.log('Logging in..');
+          return done(null, user[0]);
+        }).catch(function (err){
+          console.log('kokkel');
+          console.log(err);
+        });
+
+      
+
+  }));
 
 };
+
+
+
+

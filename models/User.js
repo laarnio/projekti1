@@ -36,14 +36,3 @@ User.relationMappings = {
  
 };
 
-User.usergenerateHash = function(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
-
-// checking if password is valid
-User.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
-};
-
-// create the model for users and expose it to our app
-//module.exports = User.model('User', User.jsonSchema);

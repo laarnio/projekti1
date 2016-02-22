@@ -8,7 +8,14 @@
 <body class="container">
 
     <header>
-        <% include ../partials/header %>
+        <%if (logged) { %>
+            <% include ../partials/loggedheader %>
+        <% }%>
+        <%if (!logged) { %>
+            <% include ../partials/header %>
+        <% } %>
+
+       
     </header>
 
     <main>

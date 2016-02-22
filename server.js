@@ -46,20 +46,34 @@ app.get('/', function (req, res) {
     { name: 'Scotch', drunkness: 10 }
   ];
   var tagline = "Anyfin can happen";
+  var logged = false;
+  if(req.isAuthenticated()){
+    logged = true;
+  }
+  console.log(logged);
   res.render('pages/index', {
     drinks: drinks,
-    tagline: tagline
+    tagline: tagline,
+    logged: logged
   });
 });
 
 //about page
 app.get('/about', function (req, res) {
-  res.render('pages/about');
+  var logged = false;
+  if(req.isAuthenticated()){
+    logged = true;
+  }
+  res.render('pages/about', {
+    logged: logged
+  });
+
 });
 
 //rest of the pages routers
 require('./routes/login.js')(app, passport); 
 require('./routes/signup.js')(app, passport);
+var loggedFile = require('./routes/logged.js')(app, passport);
 
 app.use(function (err, req, res, next) {
   if (err) {
