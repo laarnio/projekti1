@@ -31,6 +31,7 @@ module.exports = function(passport) {
         User
               .query()
               .where('id', id)
+              .first()
               .then(function (user){
                 done(null, user);
               }).catch(function (err){
@@ -45,9 +46,9 @@ module.exports = function(passport) {
     // by default, if there was no name, it would just be called 'local'
 
     passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email               
+        // by default, local strategy uses username and password, we will override with email
         usernameField : 'username',
-        passwordField : 'password',       
+        passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, username, password, done) {
@@ -55,19 +56,20 @@ module.exports = function(passport) {
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
-        
+
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         //console.log(username + 'username');
-        
+
         User
             .query()
             .where('username', username)
+            .first()
             .then(function (user) {
-            
+
             //console.log(user);
             // check to see if theres already a user with that username
-            if (user != '') {
+            if (user) {
                 console.log('Username is already taken.');
                 done(null, false);
                 //return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
@@ -80,27 +82,22 @@ module.exports = function(passport) {
                   .query()
                   .insert(req.body)
                   .then(function (user){
-                    console.log('New user created');   
-                    //TODO: joku vitun returni nyt saatana tähän
+                    console.log('New user created');
                     console.log(user);
                     return done(null, user);
                   }).catch(function (err){
-                    console.log(err);                  
+                    console.log(err);
                   });
-                  
-
-                
-                
             }
 
         })
             .catch(function (err) {
 
               console.log(err);
-            });    
+            });
 
         });
-    
+
     }));
   passport.use('local-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
@@ -117,30 +114,24 @@ module.exports = function(passport) {
       User
         .query()
         .where('username', username)
+        .first()
         .then(function (user){
           console.log(user);
-          if(!(user.length && user.length > 0)  ){
+          if (!user) {
             console.log('User not found.');
             return done(null, false);
           }
-          console.log(user[0].password);
-          if(!bcrypt.compareSync(password, user[0].password)){
+          console.log(user.password);
+          if (!bcrypt.compareSync(password, user.password)) {
             console.log('Invalid password.');
             return done(null, false);
           }
           console.log('Logging in..');
-          return done(null, user[0]);
+          return done(null, user);
         }).catch(function (err){
           console.log('kokkel');
           console.log(err);
         });
-
-      
-
   }));
 
 };
-
-
-
-

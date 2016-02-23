@@ -36,8 +36,11 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-app.set('view engine', 'ejs');
 
+app.set('view engine', 'ejs');
+//rest of the pages routers
+require('./routes/login.js')(app, passport);
+require('./routes/signup.js')(app, passport);
 // index page
 app.get('/', function (req, res) {
   var drinks = [
@@ -70,9 +73,7 @@ app.get('/about', function (req, res) {
 
 });
 
-//rest of the pages routers
-require('./routes/login.js')(app, passport); 
-require('./routes/signup.js')(app, passport);
+
 var loggedFile = require('./routes/logged.js')(app, passport);
 
 app.use(function (err, req, res, next) {

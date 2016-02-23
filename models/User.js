@@ -33,6 +33,12 @@ User.jsonSchema = {
 
 // This object defines the relations to other models.
 User.relationMappings = {
- 
+  messages: {
+    relation: Model.OneToManyRelation,
+    modelClass: require('./Message'),
+    join: {
+      from: 'User.id',
+      to: 'Message.author'
+    }
+   } 
 };
-
