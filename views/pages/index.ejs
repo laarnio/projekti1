@@ -27,13 +27,20 @@
             <p><%= tagline %></p>
 
             <h2>News</h2>
-            <ul>
-                <% msgs.forEach(function(msg) { %>
 
-                    <% include ../partials/message %>
-                <% }); %>
-            </ul>
         </div>
+        <ul>
+                <% msgs.forEach(function(msg) { %>
+                    <div class="row">
+                      <div class="col-sm-8">
+                        <div class="jumbotron">
+                          <% include ../partials/message %>
+                        </div>
+                      </div>
+                    </div>
+                <% }); %>
+        </ul>
+
     </main>
 
     <footer>
