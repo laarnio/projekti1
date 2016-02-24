@@ -14,33 +14,33 @@
     <main>
         <div class="jumbotron">
             <h2>Sign up!</h2>
-            
-            <%if (typeof message != 'undefined') { %>
-                <span class="text-danger"><%= message %></span>
+
+            <%if (typeof error != 'undefined') { %>
+                <span class="text-danger"><%= error %></span>
             <% } %>
             <form action="/signup" method = "post">
                 <label>Username: </label>
                 <input type="text" class="form-control" name="username"><br><br>
-            
+
                 <label>Password: </label>
                 <input type="password" class="form-control" name="password"><br><br>
-            
+
                 <label>First name: </label>
                 <input type="text" class="form-control" name="firstName"><br><br>
-            
+
                 <label>Last name: </label>
                 <input type="text" class="form-control" name="lastName"><br><br>
                 <input type="submit" value="Sign Up!">
-            
+
             </form>
 
-              
+
         </div>
     </main>
 
     <footer>
         <% include ../partials/footer %>
     </footer>
-    
+
 </body>
 </html>

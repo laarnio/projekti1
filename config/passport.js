@@ -109,7 +109,6 @@ module.exports = function(passport) {
 
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
-      console.log('templatesta tulee: '+ password);
 
       User
         .query()
@@ -129,7 +128,6 @@ module.exports = function(passport) {
           console.log('Logging in..');
           return done(null, user);
         }).catch(function (err){
-          console.log('kokkel');
           console.log(err);
         });
   }));

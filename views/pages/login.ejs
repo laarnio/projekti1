@@ -14,26 +14,26 @@
     <main>
         <div class="jumbotron">
             <h1>Project laarnio 2016</h1>
-            
+
             <h2>Log in</h2>
-            <%if (typeof message != 'undefined') { %>
-                <span class="text-danger"><%= message %></span>
+            <%if (typeof error != 'undefined') { %>
+                <span class="text-danger"><%= error %></span>
             <% } %>
             <form action="/login" method = "post">
                 <label>Username: </label>
                 <input type="text" class="form-control" name="username"><br><br>
-            
+
                 <label>Password: </label>
                 <input type="password" class="form-control" name="password"><br><br>
-                <input type="submit" value="Sign Up!">
+                <input type="submit" value="Log in">
             </form>
-            
+
         </div>
     </main>
 
     <footer>
         <% include ../partials/footer %>
     </footer>
-    
+
 </body>
 </html>

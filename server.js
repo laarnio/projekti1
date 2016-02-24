@@ -12,8 +12,9 @@ var session       = require('express-session');
 var pg            = require('pg');
 var Model         = require('objection').Model;
 
-var knexConfig = require('./knexfile');
-var knex = Knex(knexConfig.development);
+var knexConfig    = require('./knexfile');
+var knex          = Knex(knexConfig.development);
+
 
 Model.knex(knex);
 
@@ -38,27 +39,36 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 app.set('view engine', 'ejs');
+
 //rest of the pages routers
 require('./routes/login.js')(app, passport);
 require('./routes/signup.js')(app, passport);
+require('./routes/admin')(app, passport);
+var Message = require('./models/Message');
 // index page
 app.get('/', function (req, res) {
-  var drinks = [
-    { name: 'Bloody Mary', drunkness: 3 },
-    { name: 'Martini', drunkness: 5 },
-    { name: 'Scotch', drunkness: 10 }
-  ];
+  var msgs = [];
   var tagline = "Anyfin can happen";
   var logged = false;
   if(req.isAuthenticated()){
     logged = true;
   }
-  console.log(logged);
-  res.render('pages/index', {
-    drinks: drinks,
-    tagline: tagline,
-    logged: logged
-  });
+  Message
+    .query()
+    .where('approved', true)
+    .andWhere('type', 'news')
+    .eager('author')
+    .then(function (messages) {
+      msgs = messages;
+      console.log();
+      res.render('pages/index', {
+        msgs: msgs,
+        tagline: tagline,
+        logged: logged
+      });
+    }).catch (function (err){
+      console.log(err);
+    });
 });
 
 //about page
@@ -86,3 +96,4 @@ app.use(function (err, req, res, next) {
 
 app.listen(8080);
 console.log('Listening to radio 8080');
+
